@@ -3,7 +3,8 @@ module BeanUtils
     include TencentCloudIdCardVerificationConcern
     include CloudServiceSecretConcern
 
-    acts_as_tenant(:application, class_name: "::Application", optional: true)
+    # acts_as_tenant(:application, class_name: "::Application", optional: true)
+    belongs_to :application, class_name: "::Application", optional: true
 
     # service providers, tencent_cloud, aliyun, yunpian etc.
     # add build_#{service_provider}_client method after add new service provider
