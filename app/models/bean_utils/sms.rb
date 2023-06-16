@@ -5,6 +5,8 @@ module BeanUtils
     include TencentCloudSmsConcern
     include CloudServiceSecretConcern
 
+    service_secret_attributes "access_key", "access_secret"
+
     # acts_as_tenant(:application, class_name: "::Application", optional: true)
     belongs_to :application, class_name: "::Application", optional: true
 
