@@ -5,32 +5,24 @@ module BeanUtils
     extend ActiveSupport::Concern
 
     included do
-      attr_accessor :access_key, :access_secret
+      def self.service_secret_attributes(*attr_names)
+        attr_names.each do |attr_name|
+          define_method("encrypt_#{attr_name}") do |value|
+            self.public_send "#{attr_name}_encrypted=", self.class.aes128_decrypt(value)
+          end
 
-      def access_key=(value)
-        @access_key = value
-        encrypt_access_key
-      end
+          define_method("#{attr_name}_decrypted") do
+            self.class.aes128_decrypt(self.public_send("#{attr_name}_encrypted"))
+          end
 
-      def access_secret=(value)
-        @access_secret = value
-        encrypt_access_secret
-      end
+          define_method("#{attr_name}=") do |value|
+            self.public_send "#{attr_name}_encrypted=", self.class.aes128_encrypt(value)
+          end
 
-      def access_key_decrypted
-        @access_key_decrypted ||= self.class.aes128_decrypt(access_key_encrypted)
-      end
-
-      def access_secret_decrypted
-        @access_secret_decrypted ||= self.class.aes128_decrypt(access_secret_encrypted)
-      end
-
-      def encrypt_access_key
-        self.access_key_encrypted = self.class.aes128_encrypt(access_key)
-      end
-
-      def encrypt_access_secret
-        self.access_secret_encrypted = self.class.aes128_encrypt(access_secret)
+          define_method("#{attr_name}") do
+            self.public_send "#{attr_name}_encrypted"
+          end
+        end
       end
     end
   end
