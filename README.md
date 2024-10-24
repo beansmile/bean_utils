@@ -2,6 +2,17 @@
 
 Rails-based base tool engine integrates a variety of services
 
+## Installation
+
+Add this line to your application's Gemfile:
+
+1. Copy repo to your rails project, like `engines/`
+2. Add this to your gemfile `gem 'bean_utils', path: 'engines/bean_utils'`
+3. Run `bundle install`
+4. Run `rake bean_utils:install:migrations` generate migrations
+5. Delete the migrations files that are not needed for this project
+6. Run `rake db:migrate`
+
 ## Usage
 
 ### Sms
@@ -59,16 +70,22 @@ end
 Google::Client.base_uri Google::Client.config.dig(:api_base_uri)
 ```
 
-## Installation
+### EmailDomains
 
-Add this line to your application's Gemfile:
+Email domain whitelist and blocklist base on https://github.com/disposable-email-domains/disposable-email-domains.
 
-1. Copy repo to your rails project, like `engines/`
-2. Add this to your gemfile `gem 'bean_utils', path: 'engines/bean_utils'`
-3. Run `bundle install`
-4. Run `rake bean_utils:install:migrations` generate migrations
-5. Delete the migrations files that are not needed for this project
-6. Run `rake db:migrate`
+```ruby
+# Check if the email is in the blocklisted domains
+BeanUtils::EmailDomains.in_blocklist?("email@example.com") #=> return true or false
+
+# Check if the email is in the whitelist domains
+BeanUtils::EmailDomains.in_whitelist?("email@example.com") #=> return true or false
+
+# Or you can directly read out the list to do other things
+BeanUtils::EmailDomains.blocklist # return array of domain
+
+BeanUtils::EmailDomains.whitelist # return array of domain
+```
 
 ## Contributing
 Contribution directions go here.
